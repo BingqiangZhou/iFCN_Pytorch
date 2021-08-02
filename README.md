@@ -1,7 +1,7 @@
 
 # iFCN
 
-修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，包括AlexNet、VGG、ResNet等等，实现iFCN。
+修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，实现FCN，并在FCN的基础上，实现iFCN的训练验证等过程。
 
 ## 1. 实现FCN
 
@@ -19,5 +19,5 @@
 
 参考论文：
 
-    - [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1603.04042.pdf)
-    - [Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)
+- [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1603.04042.pdf)
+- [Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)
