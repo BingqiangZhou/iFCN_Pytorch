@@ -1,5 +1,5 @@
 
-# iFCN
+# iFCN_Pytorch
 
 修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，实现FCN，并在FCN的基础上，实现iFCN的训练验证等过程。
 

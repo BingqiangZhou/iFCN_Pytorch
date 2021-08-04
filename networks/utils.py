@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 
 def modify_first_layer_weight(weights, first_layer_name='conv1', initialization_type='mean'):
     assert initialization_type in ['mean', 'zero']
@@ -16,5 +17,10 @@ def modify_first_layer_weight(weights, first_layer_name='conv1', initialization_
     
     return weights
 
-
+def upsample_size_to_target(to_upsample_tensor, target_tensor):
+    _, _, h1, w1 =  to_upsample_tensor.shape
+    _, _, h2, w2 =  target_tensor.shape
+    if h1 != h2 or w1 != w2:
+        out = F.interpolate(to_upsample_tensor, (h2, w2))
+    return out
 

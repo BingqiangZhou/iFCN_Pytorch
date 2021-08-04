@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from FCN import FCN
+from utils import upsample_size_to_target
 
 class iFCN(nn.Module):
     '''
@@ -26,15 +26,13 @@ class iFCN(nn.Module):
 
     def forward(self, x):
         out = self.fcn(x)
-        _, _, h1, w1 =  out.shape
-        _, _, h2, w2 =  x.shape
-        if h1 != h2 or w1 != w2:
-            out = F.interpolate(out, (h2, w2))
+        out = upsample_size_to_target(out, x)
         return out
 
 x = torch.rand(1, 5, 384, 384)
-# net = iFCN('ResNet18')
-net = iFCN('AlexNet', stride_out=16, upsample_type='interpolate')
+# net = iFCN('ResNet18', stride_out=8, upsample_type='deconv')
+# net = iFCN('AlexNet', stride_out=8, upsample_type='deconv')
+net = iFCN('AlexNet', stride_out=8, upsample_type='interpolate')
 
 out = net(x)
 print(out.shape)

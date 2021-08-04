@@ -2,6 +2,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from importlib import import_module
 
+from utils import upsample_size_to_target
+
 class FCN(nn.Module):
     '''
         reference paper:
@@ -69,10 +71,8 @@ class FCNClassifier16s(nn.Module):
     def forward(self, x_s32, x_s16, x_s8):
         out_s16_1 = self.upsample_s32(x_s32)
         out_s16_2 = self.conv_s16(x_s16)
-        _, _, h1, w1 =  out_s16_1.shape
-        _, _, h2, w2 =  out_s16_2.shape
-        if h1 != h2 or w1 != w2:
-            out_s16_1 = F.interpolate(out_s16_1, (h2, w2))
+        
+        out_s16_1 = upsample_size_to_target(out_s16_1, out_s16_2)
         
         out = self.upsample_s16(out_s16_1 + out_s16_2)
         out = self.classifier(out)
@@ -95,22 +95,17 @@ class FCNClassifier8s(nn.Module):
     def forward(self, x_s32, x_s16, x_s8):
         out_s16_1 = self.upsample_s32(x_s32)
         out_s16_2 = self.conv_s16(x_s16)
-        _, _, h1, w1 =  out_s16_1.shape
-        _, _, h2, w2 =  out_s16_2.shape
-        if h1 != h2 or w1 != w2:
-            out_s16_1 = F.interpolate(out_s16_1, (h2, w2))
+        
+        out_s16_1 = upsample_size_to_target(out_s16_1, out_s16_2)
 
         out_s8_1 = self.upsample_s16(out_s16_1 + out_s16_2)
         out_s8_2 = self.conv_s8(x_s8)
-        _, _, h1, w1 =  out_s8_1.shape
-        _, _, h2, w2 =  out_s8_2.shape
-        if h1 != h2 or w1 != w2:
-            out_s8_1 = F.interpolate(out_s8_1, (h2, w2))
+        
+        out_s8_1 = upsample_size_to_target(out_s8_1, out_s8_2)
 
         out = self.upsample_s8(out_s8_1 + out_s8_2)
         out = self.classifier(out)
         return out
-
 
 def upsample_layer(scale_factor, upsample_type='deconv', in_channels=0, out_channels=0):
     if upsample_type == 'deconv':
