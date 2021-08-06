@@ -142,7 +142,7 @@ def test_random_sample():
     plt.imshow(temp)
     plt.scatter(x, y, s=5, c='r')
 
-    plt.savefig("../images/test.png")
+    plt.savefig("../images/test_random_sampling.png")
     # plt.show()
 
 # test_random_sample()

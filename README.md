@@ -36,7 +36,9 @@
 
 ## 3. 随机采样
 
-根据[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中`3.2. Simulating user interactions`写的前背景采样策略代码见[utils/random_sampling.py](./utils/random_sampling.py)，其中`d_margin`与`d_step`的默认值论文中没有提到，这里参考了[isl-org/Intseg](https://github.com/isl-org/Intseg)库中代码[genIntSegPairs.m](https://github.com/isl-org/Intseg/blob/master/genIntSegPairs.m)的设置，分别将其设置为5，10。
+根据[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中`3.2. Simulating user interactions`写的前背景采样策略代码见[utils/random_sampling.py](./utils/random_sampling.py)，其中`d_margin`与`d_step`的默认值论文中没有提到，这里参考了[isl-org/Intseg](https://github.com/isl-org/Intseg)库中代码[genIntSegPairs.m](https://github.com/isl-org/Intseg/blob/master/genIntSegPairs.m)的设置，分别将其设置为5，10。随机采样示例图如下：
+
+![random_sampling](./images/test_random_sampling.png)
 
 ## 4. 数据对的生成与加载
 
