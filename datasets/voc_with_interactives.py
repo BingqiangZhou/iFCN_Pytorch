@@ -7,7 +7,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import torchvision.transforms as T
 
-from utils.transforms import TransfromsCompose
+from .utils.transforms import TransfromsCompose
 
 class VOCSegmentationWithInteractive():
     '''
@@ -80,7 +80,7 @@ class VOCSegmentationWithInteractive():
     def __get_item_by_image_names__(self, index):
         image_name = self.file_names[index]
         cur_image_fg_interactive_paths = glob(os.path.join(self.interactives_dir, f'{image_name}_*_fg_*.png'))
-        print(len(cur_image_fg_interactive_paths))
+        # print(len(cur_image_fg_interactive_paths))
         interactive_index = random.choice(range(len(cur_image_fg_interactive_paths)))
         cur_fg_interactive_path = cur_image_fg_interactive_paths[interactive_index]
         cur_bg_interactive_path = cur_fg_interactive_path.replace('fg', 'bg')
@@ -96,54 +96,3 @@ class VOCSegmentationWithInteractive():
             return len(self.file_names)
         else: # main_data == 'interactives':
             return len(self.fg_interactive_path)
-
-
-def test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image'):
-    transforms = TransfromsCompose([
-        T.RandomHorizontalFlip(p=0.5),
-        T.Resize((384, 384))
-    ])
-    dataset = VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set, transforms, main_data)
-    image, label, fg_interactive, bg_interactive, image_name = dataset[0]
-    
-    plt.figure(figsize=(20, 8))
-    
-    plt.subplot(1, 2, 1)
-    plt.title(f'{image_name} image')
-    plt.imshow(image)
-    plt.axis('off')
-    
-    fg = np.array(fg_interactive)
-    y, x = np.nonzero(fg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='r')
-    bg = np.array(bg_interactive)
-    y, x = np.nonzero(bg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='g')
-
-    plt.subplot(1, 2, 2)
-    plt.title(f'{image_name} label')
-    plt.imshow(label)
-    plt.axis('off')
-    
-    fg = np.array(fg_interactive)
-    y, x = np.nonzero(fg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='r')
-    bg = np.array(bg_interactive)
-    y, x = np.nonzero(bg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='g')
-
-    plt.savefig(f"../images/test_VOCSegmentationWithInteractive_{image_name}_{image_set}_{main_data}.png")
-    # plt.show()
-    
-
-
-root_dir='/raid/home/guiyan/datasets'
-interactives_root_dir='../interactives'
-test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
-test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='interactive')
-test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='image')
-test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='interactive')

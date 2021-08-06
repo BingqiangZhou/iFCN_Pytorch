@@ -2,7 +2,7 @@
 import os
 from PIL import Image
 
-from utils.transforms import TransfromsCompose
+from .utils.transforms import TransfromsCompose
 
 class VOCSegmentation():
     '''

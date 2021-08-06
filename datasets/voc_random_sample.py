@@ -6,8 +6,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import torchvision.transforms as T
 
-from utils.transforms import TransfromsCompose
-from utils.random_sampling import sample_points_for_singal_object
+from .utils.transforms import TransfromsCompose
+from .utils.random_sampling import sample_points_for_singal_object
 
 class VOCSegmentationRandomSample():
     '''
@@ -66,51 +66,4 @@ class VOCSegmentationRandomSample():
 
     def __len__(self):
         return len(self.file_names)
-
-
-def test_VOCSegmentationWithInteractive(root_dir, image_set='train'):
-    transforms = TransfromsCompose([
-        T.RandomHorizontalFlip(p=0.5),
-        T.Resize((384, 384))
-    ])
-    dataset = VOCSegmentationRandomSample(root_dir, image_set=image_set, transforms=transforms)
-    image, label, fg_interactive, bg_interactive, image_name, object_id = dataset[0]
-    
-    plt.figure(figsize=(20, 8))
-    
-    plt.subplot(1, 2, 1)
-    plt.title(f'{image_name} image')
-    plt.imshow(image)
-    plt.axis('off')
-    
-    fg = np.array(fg_interactive)
-    y, x = np.nonzero(fg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='r')
-    bg = np.array(bg_interactive)
-    y, x = np.nonzero(bg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='g')
-
-    plt.subplot(1, 2, 2)
-    plt.title(f'{image_name} label')
-    plt.imshow(label)
-    plt.axis('off')
-    
-    fg = np.array(fg_interactive)
-    y, x = np.nonzero(fg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='r')
-    bg = np.array(bg_interactive)
-    y, x = np.nonzero(bg)
-    print(image_name, y, x)
-    plt.scatter(x, y, s=10, c='g')
-
-    plt.savefig(f"../images/test_VOCSegmentationRandomSample_{image_set}_{object_id}_{image_name}.png")
-    # plt.show()
-    
-
-
-root_dir='/raid/home/guiyan/datasets'
-test_VOCSegmentationWithInteractive(root_dir, image_set='train')
-test_VOCSegmentationWithInteractive(root_dir, image_set='val')
+        
