@@ -75,6 +75,29 @@ def sample_bg_points_strategy_3(bg_binary_mask:np.ndarray, num_points=10, d=40):
         nc[y, x] = 1
     return nc
 
+def sample_points_for_singal_object(label, object_id):
+    temp_label = label.copy()
+    temp_label[label == 255] = 0
+    
+    id_list = np.unique(temp_label)
+    strategy_index_list = [1, 3] if len(id_list) <= 2 else [1, 2, 3]
+    strategy_index = np.random.choice(strategy_index_list) # random choice a sample strategy
+
+    object_mask = np.uint8(label == object_id)
+    if object_mask.any() == False:
+        return None
+    
+    pc = sample_fg_points(object_mask)
+    if strategy_index == 1:
+        nc = sample_bg_points_strategy_1(1 - object_mask)
+    elif strategy_index == 3:
+        nc = sample_bg_points_strategy_3(1 - object_mask)
+    else: # strategy_index == 2
+        bg_object_label = label.copy()
+        bg_object_label[label == object_id] = 0
+        nc = sample_bg_points_strategy_2(bg_object_label)
+    return np.stack([pc, nc]) # [2, h, w]
+
 def sample_points_for_region(sample_region, num_points=10, d_step=10):
     pc = np.zeros_like(sample_region) # point channel
     for i in range(num_points):
@@ -88,8 +111,8 @@ def sample_points_for_region(sample_region, num_points=10, d_step=10):
 
 def test_random_sample():
     
-    image = np.array(Image.open('../images/2007_000033.jpg'))
-    label = np.array(Image.open('../images/2007_000033.png'))
+    image = np.array(Image.open('../../images/2007_000033.jpg'))
+    label = np.array(Image.open('../../images/2007_000033.png'))
     label[label == 255] = 0
 
     plt.figure(figsize=(16, 8))
@@ -142,7 +165,7 @@ def test_random_sample():
     plt.imshow(temp)
     plt.scatter(x, y, s=5, c='r')
 
-    plt.savefig("../images/test_random_sampling.png")
+    plt.savefig("../../images/test_random_sampling.png")
     # plt.show()
 
 # test_random_sample()
