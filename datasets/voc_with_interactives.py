@@ -49,15 +49,18 @@ class VOCSegmentationWithInteractive():
 
     def __getitem__(self, index):
         if self.main_data == 'image':
-            fg_interactive, bg_interactive, image_name = self.__get_item_by_image_names__(index)
+            fg_interactive, bg_interactive, image_name, object_id = self.__get_item_by_image_names__(index)
         else: # main_data == 'interactives':
-            fg_interactive, bg_interactive, image_name = self.__get_item_by_interactives__(index)
+            fg_interactive, bg_interactive, image_name, object_id = self.__get_item_by_interactives__(index)
 
         image_path = os.path.join(self.image_dir, image_name + ".jpg")
         label_path = os.path.join(self.mask_dir, image_name + ".png")
 
         image = Image.open(image_path).convert('RGB')
-        label = Image.open(label_path)
+        label_np = np.array(Image.open(label_path))
+
+        label = np.uint8(label_np == object_id)
+        label = Image.fromarray(label)
 
         if self.transforms is not None:
             image, label, fg_interactive, bg_interactive = self.transforms(image, label, fg_interactive, bg_interactive)
@@ -73,9 +76,10 @@ class VOCSegmentationWithInteractive():
         bg_interactive = Image.open(cur_bg_interactive_path)
 
         file_name = os.path.split(cur_fg_interactive_path)[1]
-        image_name = '_'.join(file_name.split('_')[:2])
+        image_name = '_'.join(file_name.split('_')[:2]) # year_number
+        object_id = int(file_name.split('_')[2])
 
-        return fg_interactive, bg_interactive, image_name
+        return fg_interactive, bg_interactive, image_name, object_id
 
     def __get_item_by_image_names__(self, index):
         image_name = self.file_names[index]
@@ -89,7 +93,10 @@ class VOCSegmentationWithInteractive():
         fg_interactive = Image.open(cur_fg_interactive_path)
         bg_interactive = Image.open(cur_bg_interactive_path)
 
-        return fg_interactive, bg_interactive, image_name
+        file_name = os.path.split(cur_fg_interactive_path)[1]
+        object_id = int(file_name.split('_')[2])
+
+        return fg_interactive, bg_interactive, image_name, object_id
 
     def __len__(self):
         if self.main_data == 'image':

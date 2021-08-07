@@ -83,7 +83,7 @@ def test_VOCSegmentationRandomSample(root_dir, image_set='train'):
         T.Resize((384, 384))
     ])
     dataset = VOCSegmentationRandomSample(root_dir, image_set=image_set, transforms=transforms)
-    image, label, fg_interactive, bg_interactive, image_name, object_id = dataset[0]
+    image, label, fg_interactive, bg_interactive, image_name = dataset[0]
     
     plt.figure(figsize=(20, 8))
     
@@ -115,7 +115,7 @@ def test_VOCSegmentationRandomSample(root_dir, image_set='train'):
     print(image_name, y, x)
     plt.scatter(x, y, s=10, c='g')
 
-    plt.savefig(f"./images/test_VOCSegmentationRandomSample_{image_set}_{object_id}_{image_name}.png")
+    plt.savefig(f"./images/test_VOCSegmentationRandomSample_{image_set}_{image_name}.png")
     # plt.show()
 
 
@@ -144,4 +144,4 @@ def test_VOCSegmentationRandomSample(root_dir, image_set='train'):
 # dataset = VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
 # image, label, fg_interactive, bg_interactive, image_name = dataset[0]
 # dataset = VOCSegmentationRandomSample(root_dir, image_set='train')
-# image, label, fg_interactive, bg_interactive, image_name, object_id = dataset[0]
+# image, label, fg_interactive, bg_interactive, image_name = dataset[0]

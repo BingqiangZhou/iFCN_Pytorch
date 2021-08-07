@@ -44,17 +44,19 @@ class VOCSegmentationRandomSample():
         label_path = os.path.join(self.mask_dir, image_name + ".png")
 
         image = Image.open(image_path).convert('RGB')
-        label = Image.open(label_path)
+        label_np = np.array(Image.open(label_path))
 
-        ids = list(np.unique(np.array(label)))
+        ids = list(np.unique(label_np))
         if 0 in ids:
             ids.remove(0)
         if 255 in ids:
             ids.remove(255)
         
         object_id = random.choice(ids)
-        interactive_map = sample_points_for_singal_object(np.array(label), object_id)
-
+        interactive_map = sample_points_for_singal_object(label_np, object_id)
+        
+        label = np.uint8(label_np == object_id)
+        label = Image.fromarray(label)
         fg_interactive = Image.fromarray(interactive_map[0])
         bg_interactive = Image.fromarray(interactive_map[1])
 
@@ -62,7 +64,7 @@ class VOCSegmentationRandomSample():
             image, label, fg_interactive, bg_interactive = self.transforms(image, label, fg_interactive, bg_interactive)
             # image = torchvision.transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))(image)
 
-        return image, label, fg_interactive, bg_interactive, image_name, object_id
+        return image, label, fg_interactive, bg_interactive, image_name
 
     def __len__(self):
         return len(self.file_names)
