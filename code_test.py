@@ -1,3 +1,4 @@
+import os
 import glob
 from PIL import Image
 import numpy as np
@@ -34,9 +35,6 @@ def test_GenerateDataPairs_result(name='2007_000032', dir='./interactives', imag
     
     plt.savefig(f"./images/test_generate_data_pairs_{name}.png")
     # plt.show()
-
-# test_GenerateDataPairs_result(name='2007_000032', dir='./interactives', image_set='train')
-# test_GenerateDataPairs_result(name='2007_000033', dir='./interactives', image_set='val')
 
 def test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image'):
     transforms = TransfromsCompose([
@@ -76,20 +74,10 @@ def test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_s
     print(image_name, y, x)
     plt.scatter(x, y, s=10, c='g')
 
-    plt.savefig(f"../images/test_VOCSegmentationWithInteractive_{image_name}_{image_set}_{main_data}.png")
+    plt.savefig(f"./images/test_VOCSegmentationWithInteractive_{image_name}_{image_set}_{main_data}.png")
     # plt.show()
-    
 
-
-# root_dir='/raid/home/guiyan/datasets'
-# interactives_root_dir='./interactives'
-# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
-# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='interactive')
-# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='image')
-# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='interactive')
-
-
-def test_VOCSegmentationWithInteractive(root_dir, image_set='train'):
+def test_VOCSegmentationRandomSample(root_dir, image_set='train'):
     transforms = TransfromsCompose([
         T.RandomHorizontalFlip(p=0.5),
         T.Resize((384, 384))
@@ -129,20 +117,31 @@ def test_VOCSegmentationWithInteractive(root_dir, image_set='train'):
 
     plt.savefig(f"./images/test_VOCSegmentationRandomSample_{image_set}_{object_id}_{image_name}.png")
     # plt.show()
-    
+
+
+
+# test_GenerateDataPairs_result(name='2007_000032', dir='./interactives', image_set='train')
+# test_GenerateDataPairs_result(name='2007_000033', dir='./interactives', image_set='val')
+
+
 # root_dir='/raid/home/guiyan/datasets'
-# test_VOCSegmentationWithInteractive(root_dir, image_set='train')
-# test_VOCSegmentationWithInteractive(root_dir, image_set='val')
+# interactives_root_dir='./interactives'
+# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
+# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='interactive')
+# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='image')
+# test_VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='val', main_data='interactive')
 
 
-root_dir='/raid/home/guiyan/datasets'
-interactives_root_dir='./interactives'
+# root_dir='/raid/home/guiyan/datasets'
+# test_VOCSegmentationRandomSample(root_dir, image_set='train')
+# test_VOCSegmentationRandomSample(root_dir, image_set='val')
 
-dataset = VOCSegmentation(root_dir)
-image, label, image_name = dataset[0]
 
-dataset = VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
-image, label, fg_interactive, bg_interactive, image_name = dataset[0]
-
-dataset = VOCSegmentationRandomSample(root_dir, image_set='train')
-image, label, fg_interactive, bg_interactive, image_name, object_id = dataset[0]
+# root_dir='/raid/home/guiyan/datasets'
+# interactives_root_dir='./interactives'
+# dataset = VOCSegmentation(root_dir)
+# image, label, image_name = dataset[0]
+# dataset = VOCSegmentationWithInteractive(root_dir, interactives_root_dir, image_set='train', main_data='image')
+# image, label, fg_interactive, bg_interactive, image_name = dataset[0]
+# dataset = VOCSegmentationRandomSample(root_dir, image_set='train')
+# image, label, fg_interactive, bg_interactive, image_name, object_id = dataset[0]

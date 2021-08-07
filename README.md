@@ -36,11 +36,24 @@
 
 ## 3. 随机采样
 
-根据[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中`3.2. Simulating user interactions`写的前背景采样策略代码见[utils/random_sampling.py](./utils/random_sampling.py)，其中`d_margin`与`d_step`的默认值论文中没有提到，这里参考了[isl-org/Intseg](https://github.com/isl-org/Intseg)库中代码[genIntSegPairs.m](https://github.com/isl-org/Intseg/blob/master/genIntSegPairs.m)的设置，分别将其设置为5，10。随机采样示例图如下：
-
-![random_sampling](./images/test_random_sampling.png)
+根据[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中`3.2. Simulating user interactions`写的前背景采样策略代码见[utils/random_sampling.py](./utils/random_sampling.py)，其中`d_margin`与`d_step`的默认值论文中没有提到，这里参考了[isl-org/Intseg](https://github.com/isl-org/Intseg)库中代码[genIntSegPairs.m](https://github.com/isl-org/Intseg/blob/master/genIntSegPairs.m)的设置，分别将其设置为5，10。随机采样示例图[images/test_random_sampling.png](./images/test_random_sampling.png)
 
 ## 4. 数据对的生成与加载
+
+### 4.1 生成数据对
+
+使用随机采样策略，分别对VOC2012训练集、验证集（[VOC2012官方下载地址](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/)，[镜像下载地址](https://pjreddie.com/projects/pascal-voc-dataset-mirror/)）中的每幅图片中的每个对象生成N对前背景交互，前背景交互以图像的形式存储（交互打点的位置值为1，其他位置值为0）。见代码[generate_data_pairs.py](./generate_data_pairs.py)。
+
+- VOC2012训练集（1464张图像，3507个对象）：每个对象生成15对前背景交互，用于训练。（共3507*15*2=105210张交互图像）
+- VOC2012验证集（1449张图像，3427个对象）：每个对象生成1对前背景交互，用于训练时，进行验证。（共3427*2=6854张交互图像）
+
+### 4.2 加载数据集
+
+数据集以以下三种形式进行加载，在实际实验中，使用第**2**种，数据加载更加全面，另外需要注意的是第3种**无需提前生成数据对**，而第1种、第2种需要通过[generate_data_pairs.py](./generate_data_pairs.py)提前生成数据对。
+
+1. 加载VOC2012数据集中的图像，随机在15对前背景交互中加载一对，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`main_data`设置为`'image'`）。（训练集一轮1464个数据对、验证集一轮1449个数据对）
+2. 加载生成的前景交互，再取VOC2012数据集中对应的图像以及对应的背景交互，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`main_data`设置为`'interactive'`）。（训练集一轮3507*15=52605、验证集3427个数据对）
+3. 加载VOC2012数据集中的图像，随机采样生成一对前背景交互，[datasets/voc_random_sample.py](./datasets/voc_random_sample.py)（训练集一轮1464个数据对、验证集一轮1449个数据对）
 
 ## 5. 训练
 
