@@ -13,7 +13,8 @@ class VOCSegmentationWithInteractive():
     '''
         VOC dataset class for image interactive Segmentation.
     '''
-    def __init__(self, root_dir, interactives_root_dir, image_set='train', transforms=None, main_data='image'):
+    def __init__(self, root_dir, interactives_root_dir, image_set='train', transforms=None, main_data='image', 
+                interactive_transfroms_method=None):
         super(VOCSegmentationWithInteractive, self).__init__()
 
         assert image_set in ['train', 'val', 'trainval'], "`image_set` in ['train', 'val', 'trainval']"
@@ -31,6 +32,8 @@ class VOCSegmentationWithInteractive():
         self.mask_dir = os.path.join(voc_root_dir, 'SegmentationObject')
         
         self.interactives_dir = os.path.join(interactives_root_dir, image_set)
+
+        self.interactive_transfroms_method = interactive_transfroms_method
 
         if main_data == 'image':
             if not os.path.isdir(voc_root_dir):
@@ -61,6 +64,12 @@ class VOCSegmentationWithInteractive():
 
         label = np.uint8(label_np == object_id)
         label = Image.fromarray(label)
+
+        if self.interactive_transfroms_method is not None:
+            fg_interactive = self.interactive_transfroms_method(np.array(fg_interactive))
+            fg_interactive = Image.fromarray(np.uint8(fg_interactive))
+            bg_interactive = self.interactive_transfroms_method(np.array(bg_interactive))
+            bg_interactive = Image.fromarray(np.uint8(bg_interactive))
 
         if self.transforms is not None:
             image, label, fg_interactive, bg_interactive = self.transforms(image, label, fg_interactive, bg_interactive)

@@ -13,7 +13,7 @@ class VOCSegmentationRandomSample():
     '''
         VOC dataset class for Instance Segmentation.
     '''
-    def __init__(self, root_dir, target_type='Object', image_set='train', transforms=None):
+    def __init__(self, root_dir, target_type='Object', image_set='train', transforms=None, interactive_transfroms_method=None):
         super(VOCSegmentationRandomSample, self).__init__()
 
         assert target_type in ['Object', 'Class'], "`target_type` must in ['Object', 'Class']"
@@ -23,6 +23,7 @@ class VOCSegmentationRandomSample():
 
         self.root = root_dir
         self.transforms = transforms
+        self.interactive_transfroms_method = interactive_transfroms_method
 
         base_dir = 'VOCdevkit/VOC2012'
         voc_root_dir = os.path.join(self.root, base_dir)
@@ -57,8 +58,14 @@ class VOCSegmentationRandomSample():
         
         label = np.uint8(label_np == object_id)
         label = Image.fromarray(label)
-        fg_interactive = Image.fromarray(interactive_map[0])
-        bg_interactive = Image.fromarray(interactive_map[1])
+        if self.interactive_transfroms_method is not None:
+            fg_interactive = self.interactive_transfroms_method(np.array(interactive_map[0]))
+            fg_interactive = Image.fromarray(np.uint8(fg_interactive))
+            bg_interactive = self.interactive_transfroms_method(np.array(interactive_map[1]))
+            bg_interactive = Image.fromarray(np.uint8(bg_interactive))
+        else:
+            fg_interactive = Image.fromarray(interactive_map[0])
+            bg_interactive = Image.fromarray(interactive_map[1])
 
         if self.transforms is not None:
             image, label, fg_interactive, bg_interactive = self.transforms(image, label, fg_interactive, bg_interactive)

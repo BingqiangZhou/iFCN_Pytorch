@@ -109,6 +109,12 @@ def sample_points_for_region(sample_region, num_points=10, d_step=10):
         pc[index] = 1
     return pc
 
+def transfroming_user_interaction(interactive_map):
+    interactive_map[interactive_map > 0] = 1
+    distance_map = bwdist(interactive_map)
+    distance_map[distance_map > 255] = 255
+    return distance_map
+
 def test_random_sample():
     
     image = np.array(Image.open('../../images/2007_000033.jpg'))
