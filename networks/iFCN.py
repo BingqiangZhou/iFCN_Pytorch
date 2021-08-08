@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
 
-from FCN import FCN
-from utils import upsample_size_to_target
+from .FCN import FCN
+from .utils import upsample_size_to_target
 
 class iFCN(nn.Module):
     '''
         reference paper:
             Deep Interactive Object Selection, https://arxiv.org/abs/1603.04042.pdf
     '''
-    def __init__(self, backbone_name, in_channels=5, num_classes=1, stride_out=8, upsample_type='deconv', ) -> None:
+    def __init__(self, backbone_name, in_channels=5, num_classes=1, stride_out=8, upsample_type='deconv') -> None:
         super(iFCN, self).__init__()
         assert backbone_name in ['AlexNet', 'VGG', 
                             'ResNet18', 'ResNet34', 'ResNet50', 'ResNet101', 'ResNet152', 'SqueezeNet']
@@ -29,10 +29,10 @@ class iFCN(nn.Module):
         out = upsample_size_to_target(out, x)
         return out
 
-x = torch.rand(1, 5, 384, 384)
-# net = iFCN('ResNet18', stride_out=8, upsample_type='deconv')
-# net = iFCN('AlexNet', stride_out=8, upsample_type='deconv')
-net = iFCN('AlexNet', stride_out=8, upsample_type='interpolate')
+# x = torch.rand(1, 5, 384, 384)
+# # net = iFCN('ResNet18', stride_out=8, upsample_type='deconv')
+# # net = iFCN('AlexNet', stride_out=8, upsample_type='deconv')
+# net = iFCN('AlexNet', stride_out=8, upsample_type='interpolate')
 
-out = net(x)
-print(out.shape)
+# out = net(x)
+# print(out.shape)

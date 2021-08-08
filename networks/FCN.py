@@ -1,8 +1,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from importlib import import_module
 
-from utils import upsample_size_to_target
+from .classifiers import ResNet, AlexNet
+from .utils import upsample_size_to_target
 
 class FCN(nn.Module):
     '''
@@ -17,9 +17,9 @@ class FCN(nn.Module):
         assert upsample_type in ['deconv', 'interpolate']
         
         if 'ResNet' in backbone_name:
-            self.backbone_net = import_module('classifiers.ResNet', 'networks').NetRemoveFCLayer(backbone_name.lower())
+            self.backbone_net = ResNet.NetRemoveFCLayer(backbone_name.lower())
         else:
-            self.backbone_net = import_module(f'classifiers.{backbone_name}', 'networks').NetRemoveFCLayer()
+            self.backbone_net = eval(backbone_name).NetRemoveFCLayer()
         
         self.classifier = FCNClassifier(self.backbone_net.out_channels, num_classes, stride_out=8, upsample_type=upsample_type)
 

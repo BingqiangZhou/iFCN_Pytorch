@@ -22,5 +22,7 @@ def upsample_size_to_target(to_upsample_tensor, target_tensor):
     _, _, h2, w2 =  target_tensor.shape
     if h1 != h2 or w1 != w2:
         out = F.interpolate(to_upsample_tensor, (h2, w2))
+    else:
+        out = to_upsample_tensor
     return out
 
