@@ -19,8 +19,8 @@
 
 需要注意的是：
 
-- 由于不是所有的分类模型中都包括论文中对应的池化层，上面的描述中将原文中的相应步长的池化层的结果改成了相应步长的特征。
-- 为了保证任意大小的输入，以及上采样后的大小与预测的大小相同，这里利用了一个额外的双边上采样来保证这一点。
+- 由于不是所有的分类模型中都包括论文中对应的池化层，上面的描述中将原文中的相应步长的池化层的结果改成了相应步长的特征
+- 为了保证任意大小的输入，以及上采样后的大小与预测的大小相同，这里利用了一个额外的双边上采样来保证这一点
 
 ## 2. iFCN网络实现
 
@@ -55,9 +55,9 @@
 2. 加载生成的前景交互，再取VOC2012数据集中对应的图像以及对应的背景交互，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`VOCSegmentationWithInteractive`类`main_data`参数设置为`'interactive'`）。（训练集一轮3507*15=52605、验证集3427个数据对）
 3. 加载VOC2012数据集中的图像，随机采样生成一对前背景交互，[datasets/voc_random_sample.py](./datasets/voc_random_sample.py)（训练集一轮1464个数据对、验证集一轮1449个数据对）
 
-## 5. 训练
+## 5. 后处理Graph Cut Optimization
 
-## 6. 后处理Graph Cut Optimization
+## 6. 训练
 
 ## 7. 验证IoU、NOC(Number of Click)指标
 
