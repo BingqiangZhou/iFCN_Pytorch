@@ -2,7 +2,51 @@ import os
 import torch
 import numpy as np
 from tqdm import tqdm
-from torchmetrics.functional import iou
+
+def iou(pred, target, reduction='mean'):
+    if type(pred) == type(target):
+        if isinstance(pred, torch.Tensor):
+            return iou_tensor(pred, target, reduction)
+        else:
+            return iou_ndarray(pred, target, reduction)
+    else:
+        if isinstance(pred, torch.Tensor):
+            target = torch.Tensor(target, pred.device)
+            return iou_tensor(pred, target, reduction)
+        else:
+            target = np.array(target)
+            return iou_ndarray(pred, target, reduction)
+
+def iou_tensor(pred:torch.Tensor, target:torch.Tensor, reduction='mean'):
+    assert reduction in ['mean', 'sum', 'none']
+
+    pred = pred.view(pred.shape[0], -1) # [n, 1, h, w] -> [n, h*w]
+    target = target.view(target.shape[0], -1) # [n, 1, h, w] -> [n, h*w]
+    i = torch.logical_or(pred, target).int()
+    j = torch.logical_and(pred, target).int()
+    iou = torch.sum(j, dim=1) / torch.sum(i, dim=1) # [n]
+    if reduction == 'mean':
+        iou = iou.mean()
+    elif reduction == 'sum':
+        iou = iou.sum()
+    
+    return iou
+
+def iou_ndarray(pred:np.ndarray, target:np.ndarray, reduction='mean'):
+    assert reduction in ['mean', 'sum', 'none']
+
+    pred = pred.reshape(pred.shape[0], -1) # [n, 1, h, w] -> [n, h*w]
+    target = target.reshape(target.shape[0], -1) # [n, 1, h, w] -> [n, h*w]
+    i = np.logical_or(pred, target)
+    j = np.logical_and(pred, target)
+    iou = np.sum(j, axis=1) / np.sum(i, axis=1) # [n]
+    if reduction == 'mean':
+        iou = iou.mean()
+    elif reduction == 'sum':
+        iou = iou.sum()
+    
+    return iou
+
 
 def mkdir(*dirs):
     for i, dir in enumerate(dirs):
@@ -48,22 +92,27 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             optimizer.step()
             
         ## calcualate iou
-        bg_iou, fg_iou = iou((out>0).int(), label.int(), reduction='none') # # include iou for '0'(bg) and '1'(fg)
-        iou_list.append(fg_iou.item())
+        iou = iou_tensor((out>0).int(), label.int(), reduction='mean') # # include iou for '0'(bg) and '1'(fg)
+        iou_list.append(iou.item())
 
         ## graph cut optimization (TODO)
-
-        ## calcualate iou after GCO
-        bg_iou, fg_iou = iou((out>0).int(), label.int(), reduction='none') # # include iou for '0'(bg) and '1'(fg)
-        iou_after_gco_list.append(fg_iou.item())
-
+        if train_or_val == 'val': # batch size must be set to 1.
+            
+            out = (out > 0).int()
+            ## calcualate iou after GCO
+            fg_iou = iou_ndarray(out.cpu().numpy(), label.int().cpu().numpy(), reduction='mean')
+            iou_after_gco_list.append(fg_iou.item())
 
     mean_iou = np.mean(iou_list)
     mean_loss = np.mean(loss_list)
-    mean_iou_after_gco = np.mean(iou_after_gco_list)
     writer.add_scalar(f'{train_or_val}/mean_loss', mean_loss, epoch)
     writer.add_scalar(f'{train_or_val}/mean_iou', mean_iou, epoch)
-    writer.add_scalar(f'{train_or_val}/mean_iou_after_gco', mean_iou_after_gco, epoch)
-    print(f'{train_or_val}ing, epoch: {epoch}, mean loss {mean_loss}, mean iou {mean_iou}, mean iou after gco {mean_iou_after_gco}')
+    
+    out_str = f'{train_or_val}ing, epoch: {epoch}, mean loss {mean_loss}, mean iou {mean_iou}'
+    if train_or_val == 'val':
+        mean_iou_after_gco = np.mean(iou_after_gco_list)
+        writer.add_scalar(f'{train_or_val}/mean_iou_after_gco', mean_iou_after_gco, epoch)
+        out_str = f'{out_str}, mean iou after gco {mean_iou_after_gco}'
+    print(out_str)
 
     return mean_iou

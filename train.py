@@ -29,10 +29,10 @@ parser.add_argument('--upsample_type', type=str, default='deconv', choices=['dec
 parser.add_argument('--n_epoch_one_val', type=int, default=1, help='val when training n epoch')
 parser.add_argument('--load_checkpoint_path', type=str, default='', help='the path to load training state')
 parser.add_argument('--num_device', type=int, default=0, help='number of device, CPU(-1), GPU(>=0)')
-parser.add_argument('--learning_rate', type=float, default=1e-2, help='learning rate')
+parser.add_argument('--learning_rate', type=float, default=1e-3, help='learning rate')
 parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight decay')
+parser.add_argument('--fixed_size', type=int, nargs=2, default=(384, 384), help='fixed image size for training')
 args = parser.parse_args()
-
 print(args)
 
 device_str = f'cuda:{args.num_device}' if args.num_device >= 0 else 'cpu'
@@ -44,7 +44,7 @@ time_str = datetime.now().__str__().replace(":", '-')
 ## dataloader for training
 train_transforms = TransfromsCompose([
     T.RandomHorizontalFlip(p=0.5),
-    T.Resize((384, 384)),
+    T.Resize(args.fixed_size),
     T.ToTensor()
 ])
 train_dataset = VOCSegmentationWithInteractive(args.dataset_root_dir, args.interactives_root_dir, 
