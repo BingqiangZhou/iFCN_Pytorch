@@ -32,6 +32,7 @@ parser.add_argument('--num_device', type=int, default=0, help='number of device,
 parser.add_argument('--learning_rate', type=float, default=1e-3, help='learning rate')
 parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight decay')
 parser.add_argument('--fixed_size', type=int, nargs=2, default=(384, 384), help='fixed image size for training')
+parser.add_argument('--use_grabcut_optimization', type=bool, default=False, help='whether use grabcut to optimize result when evaling')
 args = parser.parse_args()
 print(args)
 
@@ -97,7 +98,8 @@ for epoch in range(start_epoch, args.epochs):
     if epoch % args.n_epoch_one_val == 0:
         # val
         model.eval()
-        mean_val_iou = one_epoch(epoch+1, model, val_dataloader, device, writer, loss_function, optimizer=None)
+        mean_val_iou = one_epoch(epoch+1, model, val_dataloader, device, writer, loss_function, optimizer=None, 
+                                use_grabcut_optimization=args.use_grabcut_optimization)
         # save model
         if mean_val_iou > max_mean_iou:
             max_mean_iou = mean_val_iou
