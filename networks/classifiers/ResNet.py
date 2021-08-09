@@ -32,7 +32,7 @@ class NetRemoveFCLayer(nn.Module):
             https://pytorch.org/vision/stable/_modules/torchvision/models/resnet.html
     '''
 
-    def __init__(self, arch: str, num_classes=21, pretrained: bool = False, progress: bool = True, **kwargs):
+    def __init__(self, arch: str, pretrained: bool = False, progress: bool = True, **kwargs):
         super(NetRemoveFCLayer, self).__init__()
         assert arch in ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 

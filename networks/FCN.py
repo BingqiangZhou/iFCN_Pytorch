@@ -109,7 +109,7 @@ class FCNClassifier8s(nn.Module):
 
 def upsample_layer(scale_factor, upsample_type='deconv', in_channels=0, out_channels=0):
     if upsample_type == 'deconv':
-        upsample = nn.ConvTranspose2d(in_channels, out_channels, scale_factor, scale_factor, bias=False)
+        upsample = nn.ConvTranspose2d(in_channels, out_channels, scale_factor*2, scale_factor, padding=scale_factor//2, bias=False)
     else:
         upsample = nn.Sequential(
             nn.Upsample(scale_factor=scale_factor),
