@@ -64,7 +64,8 @@ def mkdir(*dirs):
     
     return cur_dir
 
-def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer=None, use_grabcut_optimization=False):
+def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer=None, 
+            use_grabcut_optimization=False, input_scale=255):
     train_or_val = 'train' if optimizer is not None else 'val'
 
     iou_list = []
@@ -73,7 +74,7 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
     for data in tqdm(dataloader, desc=f'{train_or_val}ing - epoch {epoch}'):
         image, label, fg_distance_map, bg_distance_map, image_name = data
 
-        x = torch.cat([image, fg_distance_map, bg_distance_map], dim=1).float()
+        x = torch.cat([image, fg_distance_map, bg_distance_map], dim=1).float() * input_scale
         x = x.to(device)
         # label = (label > 0).int()
         label = label * 255
@@ -103,8 +104,8 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
         if use_grabcut_optimization and train_or_val == 'val': # batch size must be set to 1.
             
             out = (out > 0).int()
-            fg_interactive = (fg_distance_map[0][0] < 5/255).int()
-            bg_interactive = (bg_distance_map[0][0] < 5/255).int()
+            fg_interactive = (fg_distance_map[0][0] * 255 < 5).int()
+            bg_interactive = (bg_distance_map[0][0] * 255 < 5).int()
             image = torchvision.transforms.ToPILImage()(image[0])
             mask = grabcut_optimization(np.array(image), np.uint8(out[0][0].cpu().numpy()),
                                         np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()))

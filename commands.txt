@@ -1,0 +1,5 @@
+## resnet50
+nohup python -u train.py --backbone_name ResNet50 --num_device 3 --num_workers 4 --batch_size 32 --n_epoch_one_val 5 --use_grabcut_optimization Ture >resnet50.out  2>&1 &
+
+## alexnet
+nohup python -u train.py --backbone_name AlexNet --fixed_size 256 256 --num_device 2 --num_workers 8 --batch_size 128 --n_epoch_one_val 5 --use_grabcut_optimization Ture >alexnet.out 2>&1 &

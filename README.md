@@ -42,10 +42,10 @@
 
 ### 4.1 生成数据对
 
-使用随机采样策略，分别对VOC2012训练集、验证集（[VOC2012官方下载地址](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/)，[镜像下载地址](https://pjreddie.com/projects/pascal-voc-dataset-mirror/)）中的每幅图片中的每个对象生成N对前背景交互，前背景交互以图像的形式存储（交互打点的位置值为1，其他位置值为0）。见代码[generate_data_pairs.py](./generate_data_pairs.py)。
+使用随机采样策略，分别对VOC2012训练集、验证集（[VOC2012官方下载地址](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/)，[镜像下载地址](https://pjreddie.com/projects/pascal-voc-dataset-mirror/)）中的每幅图片中的每个对象生成N对前背景交互，前背景交互以图像的形式存储（交互打点的位置值为1，其他位置值为0）。见代码[generate_data_pairs.py](./generate_data_pairs.py)，去掉了面积小于400的对象以及对象过于细长没有采到点的对象。
 
 - VOC2012训练集（1464张图像，3507个对象）：每个对象生成15对前背景交互，用于训练。（共3507\*15\*2=105210张交互图像）
-- VOC2012验证集（1449张图像，3427个对象）：每个对象生成1对前背景交互，用于训练时，进行验证。（共3427*2=6854张交互图像）
+- VOC2012验证集（1449张图像，3427个对象）：每个对象生成1对前背景交互，用于训练时，进行验证。（实际采样3008*2=6016张交互图像）
 
 ### 4.2 加载数据集
 
@@ -55,9 +55,20 @@
 2. 加载生成的前景交互，再取VOC2012数据集中对应的图像以及对应的背景交互，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`VOCSegmentationWithInteractive`类`main_data`参数设置为`'interactive'`）。（训练集一轮3507*15=52605、验证集3427个数据对）
 3. 加载VOC2012数据集中的图像，随机采样生成一对前背景交互，[datasets/voc_random_sample.py](./datasets/voc_random_sample.py)（训练集一轮1464个数据对、验证集一轮1449个数据对）
 
-## 5. 后处理Graph Cut Optimization
+## 5. 后处理GrabCut Optimization
+
+在原论文[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中为`Graph Cut Optimization`，但由于OpenCV中有[GrabCut的方法](https://docs.opencv.org/master/d8/d83/tutorial_py_grabcut.html)，直接调用比较简单，并且GrabCut相较于GraphCut有不少改进，这里直接调用[cv.grabCut](https://docs.opencv.org/master/d3/d47/group__imgproc__segmentation.html#ga909c1dda50efcbeaa3ce126be862b37f)。
+
+将前景采样点为圆心，5为半径的圆内的点，作为确定的前景点，同样，前景采样点为圆心，5为半径的圆内的点，作为确定的背景点，将其他预测为前背景的点作为可能的前背景点，利用grabCut迭代5次，得到优化后的结果，代码见[utils/grabcut.py](./utils/grabcut.py)以及[utils/trainval.py](./utils/trainval.py)。
+
+GraphCut与GrabCut相关文章：
+
+- [16. 如何通过缝隙抠出前景 - GraphCut 和 GrabCut - Wang Hawk的文章 - 知乎](https://zhuanlan.zhihu.com/p/64615890)
+- [图像分割技术介绍 - SIGAI的文章 - 知乎](https://zhuanlan.zhihu.com/p/49512872)
 
 ## 6. 训练
+
+训练时使用[二值交叉熵损失BCE](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html?highlight=bce#torch.nn.BCEWithLogitsLoss)、[Adam优化器](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html?highlight=adam#torch.optim.Adam)，学习率设置为默认的`1e-3`，权重衰减参数设置为`1e-5`。
 
 ## 7. 验证IoU、NOC(Number of Click)指标
 

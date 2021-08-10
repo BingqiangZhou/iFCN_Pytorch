@@ -15,8 +15,7 @@ from utils.trainval import one_epoch, mkdir
 
 
 parser = argparse.ArgumentParser(description='training iFCN')
-parser.add_argument('--dataset_root_dir', type=str, default='/raid/home/guiyan/datasets', help='the path of voc2012 dataset')
-parser.add_argument('--interactives_root_dir', type=str, default='./interactives', help='the path of generated data pairs')
+parser.add_argument('--dataset_root_dir', type=str, default='./voc2012', help='the path of voc2012 dataset')
 parser.add_argument('--writer_log_dir', type=str, default='./log', help='the log path of summary writer')
 parser.add_argument('--batch_size', type=int, default=24, help='batch size of train dataloader')
 parser.add_argument('--num_workers', type=int, default=0, help='num_workers of train dataloader')
@@ -33,6 +32,7 @@ parser.add_argument('--learning_rate', type=float, default=1e-3, help='learning 
 parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight decay')
 parser.add_argument('--fixed_size', type=int, nargs=2, default=(384, 384), help='fixed image size for training')
 parser.add_argument('--use_grabcut_optimization', type=bool, default=False, help='whether use grabcut to optimize result when evaling')
+parser.add_argument('--input_scale', type=int, default=255, choices=[1, 255], help='the scale of input, [0, `input_scale`]')
 args = parser.parse_args()
 print(args)
 
@@ -48,9 +48,9 @@ train_transforms = TransfromsCompose([
     T.Resize(args.fixed_size),
     T.ToTensor()
 ])
-train_dataset = VOCSegmentationWithInteractive(args.dataset_root_dir, args.interactives_root_dir, 
-                                        image_set='train', transforms=train_transforms, main_data='interactive',
-                                        interactive_transfroms_method=transfroming_user_interaction)
+train_dataset = VOCSegmentationWithInteractive(args.dataset_root_dir, image_set='train', 
+                                            transforms=train_transforms, main_data='interactive',
+                                            interactive_transfroms_method=transfroming_user_interaction)
 train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, 
                                 num_workers=args.num_workers, pin_memory=args.pin_memory)
 
@@ -58,9 +58,9 @@ train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle
 val_transforms = TransfromsCompose([
     T.ToTensor()
 ])
-val_dataset = VOCSegmentationWithInteractive(args.dataset_root_dir, args.interactives_root_dir, 
-                                        image_set='val', transforms=val_transforms, main_data='interactive',
-                                        interactive_transfroms_method=transfroming_user_interaction)
+val_dataset = VOCSegmentationWithInteractive(args.dataset_root_dir, image_set='val', 
+                                            transforms=val_transforms, main_data='interactive',
+                                            interactive_transfroms_method=transfroming_user_interaction)
 val_dataloader = DataLoader(val_dataset, batch_size=1, shuffle=False,
                                 num_workers=0, pin_memory=False)
 
@@ -90,7 +90,7 @@ max_mean_iou = 0
 for epoch in range(start_epoch, args.epochs):
     # train
     model.train()
-    one_epoch(epoch+1, model, train_dataloader, device, writer, loss_function, optimizer)
+    one_epoch(epoch+1, model, train_dataloader, device, writer, loss_function, optimizer, input_scale=args.input_scale)
     # save lastest model
     state_dict = {'net':model.state_dict(), 'optimizer':optimizer.state_dict(), 'epoch':epoch}
     torch.save(state_dict, os.path.join(cur_save_ckpt_dir, f'{time_str}_lastest.pkl'))
@@ -99,7 +99,7 @@ for epoch in range(start_epoch, args.epochs):
         # val
         model.eval()
         mean_val_iou = one_epoch(epoch+1, model, val_dataloader, device, writer, loss_function, optimizer=None, 
-                                use_grabcut_optimization=args.use_grabcut_optimization)
+                                use_grabcut_optimization=args.use_grabcut_optimization, input_scale=args.input_scale)
         # save model
         if mean_val_iou > max_mean_iou:
             max_mean_iou = mean_val_iou
