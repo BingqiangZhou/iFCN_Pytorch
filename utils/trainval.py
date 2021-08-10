@@ -1,8 +1,8 @@
 import os
 import torch
+import torchvision
 import numpy as np
 from tqdm import tqdm
-import torchvision
 
 from .grabcut import grabcut_optimization
 
@@ -104,14 +104,16 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
         if use_grabcut_optimization and train_or_val == 'val': # batch size must be set to 1.
             
             out = (out > 0).int()
-            fg_interactive = (fg_distance_map[0][0] * 255 < 5).int()
-            bg_interactive = (bg_distance_map[0][0] * 255 < 5).int()
+            fg_interactive = (fg_distance_map[0][0] == 0).int()
+            bg_interactive = (bg_distance_map[0][0] == 0).int()
             image = torchvision.transforms.ToPILImage()(image[0])
             mask = grabcut_optimization(np.array(image), np.uint8(out[0][0].cpu().numpy()),
-                                        np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()))
+                                        np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()),
+                                        iterCount=5, radius=5)
             ## calcualate iou after GCO
-            fg_iou = iou_ndarray(mask[np.newaxis, :], label.int().cpu().numpy(), reduction='mean')
+            fg_iou = iou_ndarray(mask[np.newaxis, :], label[0].int().cpu().numpy(), reduction='mean')
             iou_after_gco_list.append(fg_iou)
+
         
     mean_iou = np.mean(iou_list)
     mean_loss = np.mean(loss_list)
