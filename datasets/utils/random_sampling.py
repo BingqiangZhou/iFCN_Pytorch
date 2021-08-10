@@ -96,6 +96,8 @@ def sample_points_for_singal_object(label, object_id):
         bg_object_label = label.copy()
         bg_object_label[label == object_id] = 0
         nc = sample_bg_points_strategy_2(bg_object_label)
+        if not np.any(nc):
+            nc = sample_bg_points_strategy_1(1 - object_mask)
     return np.stack([pc, nc]) # [2, h, w]
 
 def sample_points_for_region(sample_region, num_points=10, d_step=10):
