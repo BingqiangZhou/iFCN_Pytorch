@@ -32,7 +32,7 @@ parser.add_argument('--learning_rate', type=float, default=1e-3, help='learning 
 parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight decay')
 parser.add_argument('--fixed_size', type=int, nargs=2, default=(384, 384), help='fixed image size for training')
 parser.add_argument('--use_grabcut_optimization', type=bool, default=False, help='whether use grabcut to optimize result when evaling')
-parser.add_argument('--input_scale', type=int, default=255, choices=[1, 255], help='the scale of input, [0, `input_scale`]')
+parser.add_argument('--input_scale', type=float, default=1.0, choices=[1.0, 255.0], help='the scale of input, [0, `input_scale`]')
 args = parser.parse_args()
 print(args)
 

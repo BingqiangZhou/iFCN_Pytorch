@@ -3,6 +3,7 @@ import torch
 import torchvision
 import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 from .grabcut import grabcut_optimization
 
@@ -65,7 +66,7 @@ def mkdir(*dirs):
     return cur_dir
 
 def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer=None, 
-            use_grabcut_optimization=False, input_scale=255):
+            use_grabcut_optimization=False, input_scale=1.0):
     train_or_val = 'train' if optimizer is not None else 'val'
 
     iou_list = []
@@ -97,13 +98,13 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             optimizer.step()
             
         ## calcualate iou
-        iou = iou_tensor((out>0).int(), label.int(), reduction='mean') # # include iou for '0'(bg) and '1'(fg)
+        out = (out > 0).int()
+        iou = iou_tensor(out, label.int(), reduction='mean') # # include iou for '0'(bg) and '1'(fg)
         iou_list.append(iou.item())
 
         ## graph cut optimization
         if use_grabcut_optimization and train_or_val == 'val': # batch size must be set to 1.
             
-            out = (out > 0).int()
             fg_interactive = (fg_distance_map[0][0] == 0).int()
             bg_interactive = (bg_distance_map[0][0] == 0).int()
             image = torchvision.transforms.ToPILImage()(image[0])
@@ -113,7 +114,6 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             ## calcualate iou after GCO
             fg_iou = iou_ndarray(mask[np.newaxis, :], label[0].int().cpu().numpy(), reduction='mean')
             iou_after_gco_list.append(fg_iou)
-
         
     mean_iou = np.mean(iou_list)
     mean_loss = np.mean(loss_list)

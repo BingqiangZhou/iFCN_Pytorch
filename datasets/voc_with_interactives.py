@@ -42,7 +42,7 @@ class VOCSegmentationWithInteractive():
             if not os.path.isdir(self.interactives_dir):
                 raise RuntimeError('Dataset not found or corrupted.')
             
-            self.fg_interactive_path = glob(os.path.join(self.interactives_dir, '*-fg-*.png'))
+            self.fg_interactive_paths = glob(os.path.join(self.interactives_dir, '*-fg-*.png'))
 
     def __getitem__(self, index):
         if self.main_data == 'image':
@@ -72,7 +72,7 @@ class VOCSegmentationWithInteractive():
         return image, label, fg_interactive, bg_interactive, image_name
     
     def __get_item_by_interactives__(self, index):
-        cur_fg_interactive_path = self.fg_interactive_path[index]
+        cur_fg_interactive_path = self.fg_interactive_paths[index]
         cur_bg_interactive_path = cur_fg_interactive_path.replace('fg', 'bg')
 
         fg_interactive = Image.open(cur_fg_interactive_path)
@@ -85,10 +85,8 @@ class VOCSegmentationWithInteractive():
         return fg_interactive, bg_interactive, image_name, object_id
 
     def __get_item_by_image_names__(self, index):
-
-        file_name = os.path.split(self.image_path[index])[1]
-        image_name = file_name.split('-')[0] # year_number
-        object_id = int(file_name.split('-')[1])
+        
+        image_name = (os.path.split(self.image_paths[index])[1]).replace('.jpg', '')
 
         cur_image_fg_interactive_paths = glob(os.path.join(self.interactives_dir, f'{image_name}-*-fg-*.png'))
         # print(len(cur_image_fg_interactive_paths))
@@ -100,10 +98,13 @@ class VOCSegmentationWithInteractive():
         fg_interactive = Image.open(cur_fg_interactive_path)
         bg_interactive = Image.open(cur_bg_interactive_path)
 
+        file_name = os.path.split(cur_fg_interactive_path)[1]
+        object_id = int(file_name.split('-')[1])
+
         return fg_interactive, bg_interactive, image_name, object_id
 
     def __len__(self):
         if self.main_data == 'image':
             return len(self.image_paths)
         else: # main_data == 'interactives':
-            return len(self.fg_interactive_path)
+            return len(self.fg_interactive_paths)
