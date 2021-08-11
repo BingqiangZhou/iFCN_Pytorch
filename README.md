@@ -49,7 +49,7 @@
 
 ### 4.2 加载数据集
 
-数据集以以下三种形式进行加载，在实际实验中，使用第**2**种，数据加载更加全面，另外需要注意的是第3种**无需提前生成数据对**，而第1种、第2种需要通过[generate_data_pairs.py](./generate_data_pairs.py)提前生成数据对。
+数据集以以下三种形式进行加载，在实际实验中，使用第**2**种，数据加载更加全面，另外需要注意的是第3种**无需提前生成数据对**，而第1种、第2种需要通过[generate_data_pairs.py](./generate_data_pairs.py)提前生成数据对。已经生成好的数据对可在[release-voc2012 dataset with interactives](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/voc2012)中下载。
 
 1. 加载VOC2012数据集中的图像，随机在15对前背景交互中加载一对，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`VOCSegmentationWithInteractive`类`main_data`参数设置为`'image'`）。（训练集一轮1464个数据对、验证集一轮1449个数据对）
 2. 加载生成的前景交互，再取VOC2012数据集中对应的图像以及对应的背景交互，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`VOCSegmentationWithInteractive`类`main_data`参数设置为`'interactive'`）。（训练集一轮3507*15=52605、验证集3427个数据对）
@@ -60,6 +60,8 @@
 在原论文[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中为`Graph Cut Optimization`，但由于OpenCV中有[GrabCut的方法](https://docs.opencv.org/master/d8/d83/tutorial_py_grabcut.html)，直接调用比较简单，并且GrabCut相较于GraphCut有不少改进，这里直接调用[cv.grabCut](https://docs.opencv.org/master/d3/d47/group__imgproc__segmentation.html#ga909c1dda50efcbeaa3ce126be862b37f)。
 
 将前景采样点为圆心，5为半径的圆内的点，作为确定的前景点，同样，前景采样点为圆心，5为半径的圆内的点，作为确定的背景点，将其他预测为前背景的点作为可能的前背景点，利用grabCut迭代5次，得到优化后的结果，代码见[utils/grabcut.py](./utils/grabcut.py)以及[utils/trainval.py](./utils/trainval.py)。
+
+主要注意的时，在实验中发现，由于背景策略2是在其他目标对象区域内打点，当目标对象相似时，前背景颜色高斯混合模型相似，使得结果无法得到优化，甚至起副作用（IoU指标下降）。
 
 GraphCut与GrabCut相关文章：
 
@@ -74,7 +76,41 @@ GraphCut与GrabCut相关文章：
 
 ## 8. 交互式分割应用Demo
 
-参考论文：
+## 参考论文
 
 - [Fully Convolutional Networks for Semantic Segmentation](https://arxiv.org/abs/1603.04042.pdf)
 - [Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)
+
+## iFCN模型下载
+
+### AlexNet
+
+| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| 模型下载地址 |
+| :---: | :---: | :---: | :---:|
+| AlexNet_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| AlexNet_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| AlexNet_8s_deconv | 54.6% | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+
+### ResNet系列
+
+| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| 模型下载地址 |
+| :---: | :---: | :---: | :---:|
+| ResNet18_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+|||||
+| ResNet34_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet34_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet34_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+|||||
+| ResNet50_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet50_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet50_8s_deconv | 71.8% | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+|||||
+| ResNet101_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet101_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet101_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+|||||
+| ResNet152_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet152_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet152_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
