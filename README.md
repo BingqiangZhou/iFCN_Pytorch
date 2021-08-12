@@ -85,32 +85,32 @@ GraphCut与GrabCut相关文章：
 
 ### AlexNet
 
-| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| 模型下载地址 |
-| :---: | :---: | :---: | :---:|
-| AlexNet_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
-| AlexNet_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
-| AlexNet_8s_deconv | 54.6% | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| epochs |模型大小 | 模型下载地址 |
+| :---: | :---: | :---: | :---:| :---:| :---:|
+| AlexNet_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| AlexNet_16s_deconv | 50.5% | - | 18 | 78MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| AlexNet_8s_deconv | 54.6% | - | 29 | 78MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
 
 ### ResNet系列
 
-| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| 模型下载地址 |
-| :---: | :---: | :---: | :---:|
-| ResNet18_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet18_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet18_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| 网络名称 | 验证集IoU |验证集NOC (85% IoU)| epochs |模型大小 | 模型下载地址 |
+| :---: | :---: | :---: | :---:| :---: | :---: |
+| ResNet18_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_8s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 |||||
-| ResNet34_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet34_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet34_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet34_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet34_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet34_8s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 |||||
-| ResNet50_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet50_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet50_8s_deconv | 71.8% | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet50_32s_deconv | 62.6% | - | 16 | 130MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet50_16s_deconv | 64.8% | - | 8 | 98MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet50_8s_deconv | 71.8% | - | 31 | 98MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 |||||
-| ResNet101_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet101_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet101_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet101_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet101_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet101_8s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 |||||
-| ResNet152_32s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet152_16s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet152_8s_deconv | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet152_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet152_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet152_8s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |

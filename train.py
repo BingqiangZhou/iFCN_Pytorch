@@ -40,7 +40,7 @@ device_str = f'cuda:{args.num_device}' if args.num_device >= 0 else 'cpu'
 device = torch.device(device_str)
 
 net_name = f'{args.backbone_name}_{args.stride_out}s_{args.upsample_type}'
-time_str = datetime.now().__str__().replace(":", '-')
+time_str = datetime.now().__str__().replace(":", '-').replace(' ', '_')
 
 ## dataloader for training
 train_transforms = TransfromsCompose([

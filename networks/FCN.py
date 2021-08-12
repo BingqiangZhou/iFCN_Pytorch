@@ -21,7 +21,7 @@ class FCN(nn.Module):
         else:
             self.backbone_net = eval(backbone_name).NetRemoveFCLayer()
         
-        self.classifier = FCNClassifier(self.backbone_net.out_channels, num_classes, stride_out=8, upsample_type=upsample_type)
+        self.classifier = FCNClassifier(self.backbone_net.out_channels, num_classes, stride_out=stride_out, upsample_type=upsample_type)
 
     def forward(self, x):
         x_s32, x_s16, x_s8 = self.backbone_net(x)
