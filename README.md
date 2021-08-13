@@ -72,7 +72,12 @@ GraphCut与GrabCut相关文章：
 
 训练时使用[二值交叉熵损失BCE](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html?highlight=bce#torch.nn.BCEWithLogitsLoss)、[Adam优化器](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html?highlight=adam#torch.optim.Adam)，学习率设置为默认的`1e-3`，权重衰减参数设置为`1e-5`。
 
-## 7. 验证IoU、NOC(Number of Click)指标
+## 7. 评估NOC(Number of Click)指标
+
+每一次在最大预测错误区域中心取点（与区域边界距离最远的点），直到达到指定的IoU，代码见[noc_eval.py](./noc_eval.py)，其中：
+
+- 第一次在目标对象中心取点
+- 当取到最大的取点数（例如，20）还没有达到指定的IoU（例如，85%），则将最大的取点数作为当前目标对象的取点数，用于后续求整个数据集上的平均NOC指标。
 
 ## 8. 交互式分割应用Demo
 
@@ -87,7 +92,7 @@ GraphCut与GrabCut相关文章：
 
 | 网络名称 | 验证集IoU |验证集NOC (85% IoU)| epochs |模型大小 | 模型下载地址 |
 | :---: | :---: | :---: | :---:| :---:| :---:|
-| AlexNet_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
+| AlexNet_32s_deconv | 48.1% | - | 11 | 142MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
 | AlexNet_16s_deconv | 50.5% | - | 18 | 78MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
 | AlexNet_8s_deconv | 54.6% | - | 29 | 78MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/alexnet) |
 
@@ -95,9 +100,9 @@ GraphCut与GrabCut相关文章：
 
 | 网络名称 | 验证集IoU |验证集NOC (85% IoU)| epochs |模型大小 | 模型下载地址 |
 | :---: | :---: | :---: | :---:| :---: | :---: |
-| ResNet18_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet18_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
-| ResNet18_8s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_32s_deconv | 61.0% | - | 8 | 53MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_16s_deconv | 63.8% | - | 6 | 45MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
+| ResNet18_8s_deconv | 70.9% | - | 11 | 45MB | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 |||||
 | ResNet34_32s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |
 | ResNet34_16s_deconv | - | - | - | - | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/tag/resnet) |

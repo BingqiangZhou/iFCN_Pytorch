@@ -8,7 +8,6 @@ def bwdist(binary_mask):
     distance_map = ndimage.morphology.distance_transform_edt(1 - binary_mask)   
     return distance_map
 
-
 def grabcut_optimization(image, predict_mask, fg_interactive_mask, bg_interactive_mask, iterCount=5, radius=5):
     '''
         reference urls:
