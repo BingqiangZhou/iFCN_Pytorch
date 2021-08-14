@@ -9,3 +9,7 @@ voc2012*/
 log/
 
 models/
+
+.ipynb_checkpoints/
+
+*result*/
