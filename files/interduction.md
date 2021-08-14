@@ -3,6 +3,23 @@
 
 修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，实现FCN，并在FCN的基础上，实现iFCN。
 
+- [iFCN_Pytorch相关介绍](#ifcn_pytorch相关介绍)
+  - [1. FCN网络实现](#1-fcn网络实现)
+    - [1.1 修改图像分类网络](#11-修改图像分类网络)
+    - [1.2 结合不同步长的浅层与深层的信息](#12-结合不同步长的浅层与深层的信息)
+  - [2. iFCN网络实现](#2-ifcn网络实现)
+    - [2.1 修改FCN网络第一层](#21-修改fcn网络第一层)
+    - [2.2 微调FCN模型参数](#22-微调fcn模型参数)
+  - [3. 随机采样](#3-随机采样)
+  - [4. 数据对的生成与加载](#4-数据对的生成与加载)
+    - [4.1 生成数据对](#41-生成数据对)
+    - [4.2 加载数据集](#42-加载数据集)
+  - [5. 后处理GrabCut Optimization](#5-后处理grabcut-optimization)
+  - [6. 训练](#6-训练)
+  - [7. 评估NOC(Number of Click)指标](#7-评估nocnumber-of-click指标)
+  - [8. 交互式分割应用Demo](#8-交互式分割应用demo)
+  - [参考论文](#参考论文)
+
 ## 1. FCN网络实现
 
 ### 1.1 修改图像分类网络
@@ -71,6 +88,8 @@ GraphCut与GrabCut相关文章：
 ## 6. 训练
 
 训练时使用[二值交叉熵损失BCE](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html?highlight=bce#torch.nn.BCEWithLogitsLoss)、[Adam优化器](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html?highlight=adam#torch.optim.Adam)，学习率设置为默认的`1e-3`，权重衰减参数设置为`1e-5`。
+
+运行训练代码命令可参考[files/commands.txt](./files/commands.txt)
 
 ## 7. 评估NOC(Number of Click)指标
 
