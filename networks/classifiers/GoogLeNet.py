@@ -69,7 +69,7 @@ def googlenet_forward(self, x):
     x_s32, x_s16, x_s8 = self._forward(x)
     return x_s32, x_s16, x_s8
 
-class NetRemoveFCLayer(nn.Module):
+class NetWithConvFC(nn.Module):
     '''
         reference urls:
             https://pytorch.org/hub/pytorch_vision_googlenet/
@@ -77,7 +77,7 @@ class NetRemoveFCLayer(nn.Module):
     '''
 
     def __init__(self, pretrained: bool = False, progress: bool = True, **kwargs):
-        super(NetRemoveFCLayer, self).__init__()
+        super(NetWithConvFC, self).__init__()
 
         kwargs['init_weights'] = False #not pretrained
         self.net = GoogLeNet(**kwargs)

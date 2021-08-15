@@ -25,7 +25,7 @@ def resnet_forward_impl(self, x):
 
     return x_s32, x_s16, x_s8
 
-class NetRemoveFCLayer(nn.Module):
+class NetWithConvFC(nn.Module):
     '''
         reference urls:
             https://pytorch.org/hub/pytorch_vision_resnet/
@@ -33,7 +33,7 @@ class NetRemoveFCLayer(nn.Module):
     '''
 
     def __init__(self, arch: str, pretrained: bool = False, progress: bool = True, **kwargs):
-        super(NetRemoveFCLayer, self).__init__()
+        super(NetWithConvFC, self).__init__()
         assert arch in ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 
         self.model_infos = {

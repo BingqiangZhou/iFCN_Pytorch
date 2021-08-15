@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .classifiers import ResNet, AlexNet, GoogLeNet
+from .classifiers import ResNet, AlexNet, GoogLeNet, VGG
 from .utils import upsample_size_to_target
 
 class FCN(nn.Module):
@@ -11,15 +11,18 @@ class FCN(nn.Module):
     '''
     def __init__(self, backbone_name, num_classes=21, stride_out=8, upsample_type='deconv') -> None:
         super(FCN, self).__init__()
-        assert backbone_name in ['AlexNet', 'VGG', 'GoogLeNet',
+        assert backbone_name in ['AlexNet', 'GoogLeNet', 'VGG11', 'VGG11_BN',
+                                'VGG13', 'VGG13_BN', 'VGG16', 'VGG16_BN', 'VGG19', 'VGG19_BN'
                                 'ResNet18', 'ResNet34', 'ResNet50', 'ResNet101', 'ResNet152']
         assert stride_out in [8, 16, 32] # fcn_8s, fcn_16s, fcn_32s
         assert upsample_type in ['deconv', 'interpolate']
         
         if 'ResNet' in backbone_name:
-            self.backbone_net = ResNet.NetRemoveFCLayer(backbone_name.lower())
+            self.backbone_net = ResNet.NetWithConvFC(backbone_name.lower())
+        elif 'VGG' in backbone_name:
+            self.backbone_net = VGG.NetWithConvFC(backbone_name.lower())
         else:
-            self.backbone_net = eval(backbone_name).NetRemoveFCLayer()
+            self.backbone_net = eval(backbone_name).NetWithConvFC()
         
         self.classifier = FCNClassifier(self.backbone_net.out_channels, num_classes, stride_out=stride_out, upsample_type=upsample_type)
 

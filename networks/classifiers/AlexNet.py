@@ -1,16 +1,16 @@
 import torch
 import torch.nn as nn
 
-class NetRemoveFCLayer(nn.Module):
+class NetWithConvFC(nn.Module):
     '''
         reference urls:
             https://pytorch.org/vision/stable/_modules/torchvision/models/alexnet.html
     '''
 
     def __init__(self):
-        super(NetRemoveFCLayer, self).__init__()
+        super(NetWithConvFC, self).__init__()
         
-        self.net = AlexNetWithoutFC()
+        self.net = AlexNetWithConvFC()
         self.out_channels = [4096, 192, 64]
 
     def forward(self, x):
@@ -18,14 +18,14 @@ class NetRemoveFCLayer(nn.Module):
         return x_s32, x_s16, x_s8
 
 
-class AlexNetWithoutFC(nn.Module):
+class AlexNetWithConvFC(nn.Module):
     '''
         reference urls:
             https://pytorch.org/vision/stable/_modules/torchvision/models/alexnet.html
     '''
 
     def __init__(self):
-        super(AlexNetWithoutFC, self).__init__()
+        super(AlexNetWithConvFC, self).__init__()
         
         self.conv1 = nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2)
         self.conv2 = nn.Conv2d(64, 192, kernel_size=5, padding=2)
