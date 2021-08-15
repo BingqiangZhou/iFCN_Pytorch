@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .classifiers import ResNet, AlexNet
+from .classifiers import ResNet, AlexNet, GoogLeNet
 from .utils import upsample_size_to_target
 
 class FCN(nn.Module):
@@ -11,8 +11,8 @@ class FCN(nn.Module):
     '''
     def __init__(self, backbone_name, num_classes=21, stride_out=8, upsample_type='deconv') -> None:
         super(FCN, self).__init__()
-        assert backbone_name in ['AlexNet', 'VGG', 
-                            'ResNet18', 'ResNet34', 'ResNet50', 'ResNet101', 'ResNet152', 'SqueezeNet']
+        assert backbone_name in ['AlexNet', 'VGG', 'GoogLeNet',
+                                'ResNet18', 'ResNet34', 'ResNet50', 'ResNet101', 'ResNet152']
         assert stride_out in [8, 16, 32] # fcn_8s, fcn_16s, fcn_32s
         assert upsample_type in ['deconv', 'interpolate']
         
