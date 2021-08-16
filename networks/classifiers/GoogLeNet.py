@@ -18,23 +18,23 @@ def googlenet_forward_impl(self, x):
     # N x 64 x 56 x 56
     x = self.conv3(x)
     # N x 192 x 56 x 56
-    x = self.maxpool2(x) 
+    x_s8 = self.maxpool2(x) # x_s8 [n, 192, h/8, w/8]
 
     # N x 192 x 28 x 28
-    x_s8 = self.inception3a(x) # x_s8 [n, 256, h, w]
+    x = self.inception3a(x_s8) 
     # N x 256 x 28 x 28
-    x = self.inception3b(x_s8)
+    x = self.inception3b(x)
     # N x 480 x 28 x 28
-    x = self.maxpool3(x)
+    x_s16 = self.maxpool3(x) # x_s16 [n, 480, h/16, w/16]
     # N x 480 x 14 x 14
-    x = self.inception4a(x) 
+    x = self.inception4a(x_s16) 
     # N x 512 x 14 x 14
     # aux1: Optional[Tensor] = None
     # if self.aux1 is not None:
     #     if self.training:
     #         aux1 = self.aux1(x)
 
-    x_s16 = self.inception4b(x) # x_s16 [n, 512, h, w]
+    x = self.inception4b(x) 
     # N x 512 x 14 x 14
     x = self.inception4c(x)
     # N x 512 x 14 x 14
@@ -51,7 +51,7 @@ def googlenet_forward_impl(self, x):
     # N x 832 x 7 x 7
     x = self.inception5a(x)
     # N x 832 x 7 x 7
-    x_s32 = self.inception5b(x) # x_s32 [n, 1024, h, w]
+    x_s32 = self.inception5b(x) # x_s32 [n, 1024, h/32, w/32]
     # N x 1024 x 7 x 7
 
     # x = self.avgpool(x)
@@ -84,8 +84,7 @@ class NetWithConvFC(nn.Module):
         self.net.aux_logits = False
         self.net.aux1 = None  # type: ignore[assignment]
         self.net.aux2 = None  # type: ignore[assignment]
-        out_channel = 1024 # out channel of resnet's conv layers
-        self.out_channels = [out_channel, out_channel//2, out_channel//4]
+        self.out_channels = [1024, 480, 192]
 
         if pretrained:
             state_dict = load_state_dict_from_url(model_urls['googlenet'], progress=progress)

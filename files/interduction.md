@@ -38,6 +38,7 @@
 
 - 由于不是所有的分类模型中都包括论文中对应的池化层，上面的描述中将原文中的相应步长的池化层的结果改成了相应步长的特征
 - 为了保证任意大小的输入，以及上采样后的大小与预测的大小相同，这里利用了一个额外的双边上采样来保证这一点
+- 将全链接层转换为卷积层的过程与原FCN方式不同，全部使用卷积核为1的卷积，未对特征图尺寸进行缩小，而原FCN中使用卷积核为7的卷积，缩小了尺寸，见[源FCN代码(caffe)](https://github.com/shelhamer/fcn.berkeleyvision.org/tree/master/voc-fcn8s)，[FCN pytorch实现](https://github.com/wkentaro/pytorch-fcn/tree/master/torchfcn/models)
 
 ## 2. iFCN网络实现
 

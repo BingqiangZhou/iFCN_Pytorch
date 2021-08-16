@@ -80,7 +80,7 @@ class VGGWithConvFC(nn.Module):
         self.conv5 = self._make_layers(in_channels, out_channel_list, batch_norm=with_batch_norm)
 
         self.conv_fc = nn.Sequential(
-            nn.Conv2d(512, 4096, kernel_size=1),
+            nn.Conv2d(512, 4096, kernel_size=1), # in original fcn, kernel_size=7
             nn.ReLU(inplace=True),
             nn.Conv2d(4096, 4096, kernel_size=1),
             nn.ReLU(inplace=True),
@@ -121,7 +121,7 @@ class VGGWithConvFC(nn.Module):
         x_s16 = self.maxpool(x) # [n, c, h/16, w/16]
         x = self.conv5(x_s16)
         x = self.maxpool(x) # [n, c, h/32, w/32]
-        x_s32 = self.conv_fc(x)
+        x_s32 = self.conv_fc(x) # [n, c, h/32, w/32]
         return x_s32, x_s16, x_s8
 
 # # arch = 'vgg11'
