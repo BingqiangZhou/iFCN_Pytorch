@@ -4,8 +4,12 @@ import torchvision
 import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import cv2 as cv
 
-from .grabcut import grabcut_optimization
+# from .grabcut import grabcut_optimization
+from .graphcut import GraphCutOptimizer
+
+gco = GraphCutOptimizer()
 
 def iou(pred, target, reduction='mean'):
     if type(pred) == type(target):
@@ -99,18 +103,21 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             
         ## calcualate iou
         out = (out > 0).int()
+        prob = torch.sigmoid(out)
         iou = iou_tensor(out, label.int(), reduction='mean') # # include iou for '0'(bg) and '1'(fg)
         iou_list.append(iou.item())
 
         ## graph cut optimization
         if use_grabcut_optimization and train_or_val == 'val': # batch size must be set to 1.
             
-            fg_interactive = (fg_distance_map[0][0] == 0).int()
-            bg_interactive = (bg_distance_map[0][0] == 0).int()
+            # fg_interactive = (fg_distance_map[0][0] == 0).int()
+            # bg_interactive = (bg_distance_map[0][0] == 0).int()
             image = torchvision.transforms.ToPILImage()(image[0])
-            mask = grabcut_optimization(np.array(image), np.uint8(out[0][0].cpu().numpy()),
-                                        np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()),
-                                        iterCount=5, radius=5)
+            # mask = grabcut_optimization(np.array(image), np.uint8(out[0][0].cpu().numpy()),
+            #                             np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()),
+            #                             iterCount=5, radius=5)
+            gary = cv.cvtColor(np.array(image), cv.COLOR_RGB2GRAY)
+            mask = gco.get_segment_result(gary, prob.cpu().numpy())
             ## calcualate iou after GCO
             fg_iou = iou_ndarray(mask[np.newaxis, :], label[0].int().cpu().numpy(), reduction='mean')
             iou_after_gco_list.append(fg_iou)
