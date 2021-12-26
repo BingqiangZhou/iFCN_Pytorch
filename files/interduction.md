@@ -14,7 +14,7 @@
   - [4. 数据对的生成与加载](#4-数据对的生成与加载)
     - [4.1 生成数据对](#41-生成数据对)
     - [4.2 加载数据集](#42-加载数据集)
-  - [5. 后处理GrabCut Optimization](#5-后处理grabcut-optimization)
+  - [5. 后处理GraphCut Optimization](#5-后处理graphcut-optimization)
   - [6. 训练](#6-训练)
   - [7. 评估NOC(Number of Click)指标](#7-评估nocnumber-of-click指标)
   - [8. 交互式分割应用Demo](#8-交互式分割应用demo)
@@ -73,18 +73,35 @@
 2. 加载生成的前景交互，再取VOC2012数据集中对应的图像以及对应的背景交互，见代码[datasets/voc_with_interactives.py](./datasets/voc_with_interactives.py)（将`VOCSegmentationWithInteractive`类`main_data`参数设置为`'interactive'`）。（训练集一轮3507*15=52605、验证集3427个数据对）
 3. 加载VOC2012数据集中的图像，随机采样生成一对前背景交互，[datasets/voc_random_sample.py](./datasets/voc_random_sample.py)（训练集一轮1464个数据对、验证集一轮1449个数据对）
 
-## 5. 后处理GrabCut Optimization
+## 5. 后处理GraphCut Optimization
+
+--------人工删除线  删除以下内容-------
 
 在原论文[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中为`Graph Cut Optimization`，但由于OpenCV中有[GrabCut的方法](https://docs.opencv.org/master/d8/d83/tutorial_py_grabcut.html)，直接调用比较简单，并且GrabCut相较于GraphCut有不少改进，这里直接调用[cv.grabCut](https://docs.opencv.org/master/d3/d47/group__imgproc__segmentation.html#ga909c1dda50efcbeaa3ce126be862b37f)。
-
+</strike>
+  
 将前景采样点为圆心，5为半径的圆内的点，作为确定的前景点，同样，前景采样点为圆心，5为半径的圆内的点，作为确定的背景点，将其他预测为前背景的点作为可能的前背景点，利用grabCut迭代5次，得到优化后的结果，代码见[utils/grabcut.py](./utils/grabcut.py)以及[utils/trainval.py](./utils/trainval.py)。
 
 主要注意的时，在实验中发现，由于背景策略2是在其他目标对象区域内打点，当目标对象相似时，前背景颜色高斯混合模型相似，使得结果无法得到优化，甚至起副作用（IoU指标下降）。
+
+--------人工删除线  删除以上内容-------
+  
+**21-12-26 更新**
+
+之前无法无法优化结果，甚至起副作用的原因找到了：[utils/grabcut.py](./utils/grabcut.py)中后处理的实现，相当于利用交互的前背景点重新做了分割，而前背景交互对于`grabcut`并不充分，结果就不好了，并且之前[utils/grabcut.py](./utils/grabcut.py)的处理方式与原论文中处理方式相差很大。
+
+之前在原论文[Deep Interactive Object Selection](https://arxiv.org/pdf/1411.4038.pdf)中`Graph Cut Optimization`没有很好理解，在原论文3.5小节`3.5. Evaluation and complexity`中有一句话：`Graph cut uses Q to update the segmentation results without recomputing everything from scratch.`，在用Graph Cut做优化的时候，并不需要在利用前背景点得到高斯混合模型再估计前背景概率，而是直接用iFCN模型分割得到的概率图代替GMMs估计的前背景概率就可，见代码[utils/graphcut.py](./utils/graphcut.py)。
 
 GraphCut与GrabCut相关文章：
 
 - [16. 如何通过缝隙抠出前景 - GraphCut 和 GrabCut - Wang Hawk的文章 - 知乎](https://zhuanlan.zhihu.com/p/64615890)
 - [图像分割技术介绍 - SIGAI的文章 - 知乎](https://zhuanlan.zhihu.com/p/49512872)
+
+[utils/graphcut.py](./utils/graphcut.py)相关参考：
+
+- [PyMaxflow教程](http://pmneila.github.io/PyMaxflow/tutorial.html)
+- [PyMaxflow文档](http://pmneila.github.io/PyMaxflow/maxflow.html)
+- [XunDiYang/Graph_Cut](https://github.com/XunDiYang/Graph_Cut/blob/8fccf1016241ee45781486acec96df38b069181c/code/graph_cut.py)
 
 ## 6. 训练
 
