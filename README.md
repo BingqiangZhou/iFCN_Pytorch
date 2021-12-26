@@ -1,7 +1,7 @@
 
 # iFCN_Pytorch
 
-修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，实现FCN，并在FCN的基础上，实现iFCN。[相关介绍](./interduction.md)
+修改[torchvision](https://pytorch.org/vision/stable/models.html#classification)给出的分类模型，实现FCN，并在FCN的基础上，实现iFCN。[相关介绍](./files/interduction.md)
 
 ## 参考论文
 
