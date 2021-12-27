@@ -12,7 +12,7 @@ class iFCN(nn.Module):
     def __init__(self, backbone_name, in_channels=5, num_classes=1, stride_out=8, upsample_type='deconv') -> None:
         super(iFCN, self).__init__()
         assert backbone_name in ['AlexNet', 'GoogLeNet', 'VGG11', 'VGG11_BN',
-                                'VGG13', 'VGG13_BN', 'VGG16', 'VGG16_BN', 'VGG19', 'VGG19_BN'
+                                'VGG13', 'VGG13_BN', 'VGG16', 'VGG16_BN', 'VGG19', 'VGG19_BN',
                                 'ResNet18', 'ResNet34', 'ResNet50', 'ResNet101', 'ResNet152']
         assert stride_out in [8, 16, 32] # fcn_8s, fcn_16s, fcn_32s
         assert upsample_type in ['deconv', 'interpolate']
