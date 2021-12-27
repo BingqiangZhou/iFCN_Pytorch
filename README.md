@@ -36,7 +36,7 @@
 
 ### AlexNet
 
-|      网络名称      | IoU`</br>`(voc2012 val) | NOC`</br>`(85% IoU) | epochs | batch size`</br>`for training | 模型大小 |                                            模型下载地址                                            |
+|      网络名称      | IoU</br>(voc2012 val) | NOC</br>(85% IoU) | epochs | batch size</br>for training | 模型大小 |                                            模型下载地址                                            |
 | :----------------: | :-----------------------: | :-------------------: | :----: | :-----------------------------: | :------: | :-------------------------------------------------------------------------------------------------: |
 | AlexNet_32s_deconv |           48.1%           |         19.0         |   11   |               128               |  142MB  | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/alexnet/alexnet_32s_deconv.pkl) |
 | AlexNet_16s_deconv |           50.5%           |         18.8         |   18   |               128               |   78MB   | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/alexnet/alexnet_16s_deconv.pkl) |
@@ -44,7 +44,7 @@
 
 ### VGG系列
 
-|     网络名称     | IoU`</br>`(voc2012 val) | NOC`</br>`(85% IoU) | epochs | batch size`</br>`for training | 模型大小 |                                         模型下载地址                                         |
+|     网络名称     | IoU</br>(voc2012 val) | NOC</br>(85% IoU) | epochs | batch size</br>for training | 模型大小 |                                         模型下载地址                                         |
 | :--------------: | :-----------------------: | :-------------------: | :----: | :-----------------------------: | :------: | :-------------------------------------------------------------------------------------------: |
 | VGG11_32s_deconv |           51.9%           |         18.6         |   8   |               48               |  171MB  | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/vgg/vgg11_32s_deconv.pkl) |
 | VGG11_16s_deconv |           52.0%           |         19.1         |   15   |               48               |  107MB  | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/vgg/vgg11_16s_deconv.pkl) |
@@ -64,7 +64,7 @@
 
 ### GoogLeNet
 
-|       网络名称       | IoU`</br>`(voc2012 val) | NOC`</br>`(85% IoU) | epochs | batch size`</br>`for training | 模型大小 |                                              模型下载地址                                              |
+|       网络名称       | IoU</br>(voc2012 val) | NOC</br>(85% IoU) | epochs | batch size</br>for training | 模型大小 |                                              模型下载地址                                              |
 | :------------------: | :-----------------------: | :-------------------: | :----: | :-----------------------------: | :------: | :-----------------------------------------------------------------------------------------------------: |
 | GoogLeNet_32s_deconv |           63.1%           |         16.1         |   7   |               48               |   41MB   | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/googlenet/googlenet_32s_deconv.pkl) |
 | GoogLeNet_16s_deconv |           66.7%           |         14.9         |   15   |               48               |   26MB   | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/googlenet/googlenet_16s_deconv.pkl) |
@@ -72,7 +72,7 @@
 
 ### ResNet系列
 
-|       网络名称       | IoU`</br>`(voc2012 val) | NOC`</br>`(85% IoU) | epochs | batch size`</br>`for training | 模型大小 |                                             模型下载地址                                             |
+|       网络名称       | IoU</br>(voc2012 val) | NOC</br>(85% IoU) | epochs | batch size</br>for training | 模型大小 |                                             模型下载地址                                             |
 | :------------------: | :-----------------------: | :-------------------: | :----: | :-----------------------------: | :------: | :--------------------------------------------------------------------------------------------------: |
 | ResNet18_32s_deconv |           61.0%           |         16.7         |   8   |               96               |   53MB   | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/resnet/resnet18_32s_deconv.pkl) |
 | ResNet18_16s_deconv |           63.8%           |         16.5         |   6   |               96               |   45MB   | [下载](https://github.com/BingqiangZhou/iFCN_Pytorch/releases/download/resnet/resnet18_16s_deconv.pkl) |
