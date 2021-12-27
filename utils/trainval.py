@@ -78,7 +78,6 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
     iou_after_gco_list = []
     for data in tqdm(dataloader, desc=f'{train_or_val}ing - epoch {epoch}'):
         image, label, fg_distance_map, bg_distance_map, image_name = data
-
         x = torch.cat([image, fg_distance_map, bg_distance_map], dim=1).float() * input_scale
         x = x.to(device)
         # label = (label > 0).int()
@@ -102,8 +101,8 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             optimizer.step()
             
         ## calcualate iou
-        out = (out > 0).int()
         prob = torch.sigmoid(out)
+        out = (out > 0).int()
         iou = iou_tensor(out, label.int(), reduction='mean') # # include iou for '0'(bg) and '1'(fg)
         iou_list.append(iou.item())
 
@@ -117,7 +116,7 @@ def one_epoch(epoch, model, dataloader, device, writer, loss_function, optimizer
             #                             np.uint8(fg_interactive.cpu().numpy()), np.uint8(bg_interactive.cpu().numpy()),
             #                             iterCount=5, radius=5)
             gary = cv.cvtColor(np.array(image), cv.COLOR_RGB2GRAY)
-            mask = gco.get_segment_result(gary, prob.cpu().numpy())
+            mask = gco.get_segment_result(gary, prob[0][0].cpu().numpy(), lambda_=1, sigma=50)
             ## calcualate iou after GCO
             fg_iou = iou_ndarray(mask[np.newaxis, :], label[0].int().cpu().numpy(), reduction='mean')
             iou_after_gco_list.append(fg_iou)
